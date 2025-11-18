@@ -1,10 +1,4 @@
-#iChannel0 "file:///home/gsingh2011/Downloads-chromeos/stars.jpg"
-/* ============================================================
-   Black-hole lensing over a flat 2D texture (billboard plane)
-   - Works with any 2D image bound to iChannel0
-   - Covers the screen frustum in BOTH axes
-   - Safe fallbacks + less aggressive capture
-   ============================================================ */
+#iChannel0 "file:///home/gsingh2011/code/bh-simulation/blue_nebulae_2.png"
 
 // Tunables
 #define EPS 1e-6

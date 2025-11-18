@@ -1,4 +1,4 @@
-#iChannel0 "file:///home/gsingh2011/Downloads-chromeos/stars.jpg"
+#iChannel0 "file:///home/gsingh2011/code/bh-simulation/blue_nebulae_2.png"
 
 /* ============================================================
    Black-hole lensing with a spherical (equirectangular) sky map
@@ -94,7 +94,7 @@ vec3 render(vec2 p) {
 
   // Black hole (set rs=0.0 to disable lensing)
   BH bh;
-  float mouseX = 2.0 * (iMouse.x / iResolution.x) * 2.0 - 1.0;
+  float mouseX = 3.0 * (iMouse.x / iResolution.x) * 2.0 - 1.0;
   float mouseY = 2.0 * (iMouse.y / iResolution.y) * 2.0 - 1.0;
   float mouseRs = 0.02 + 0.1 * (iMouse.y / iResolution.y);
   bh.pos = vec3(-1.0 * mouseX, 0.0 /*mouseY*/, 0.0);
