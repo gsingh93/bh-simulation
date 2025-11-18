@@ -1,4 +1,7 @@
-#iChannel0 "file:///home/gsingh2011/code/bh-simulation/blue_nebulae_2.png"
+#iChannel0 "file://./blue_nebulae_2.png"
+#iChannel1 "file://./buf.glsl"
+#iKeyboard
+#iUniform float radius = 0.1 in{0.00, 0.4 }
 
 /* ============================================================
    Black-hole lensing with a spherical (equirectangular) sky map
@@ -85,8 +88,20 @@ vec3 sampleSkySpherical(vec3 dir) {
 /* ---------------------------- Render ----------------------------- */
 vec3 render(vec2 p) {
   // Camera
-  vec3 ro = vec3(0.0, 4.0, -7.0);
-  vec3 ta = vec3(0.0, 0.0, 0.0);
+  vec3 ro;
+  float mx = iMouse.x;           // mouse X in pixels
+  float sx = mx / iResolution.x; // 0..1
+  // float yaw = sx * 2.0 * PI;     // 0..2π
+  float yaw = texture(iChannel1, vec2(0.5, 0.5)).r + 1.0;
+  float R = 4.0;         // distance from BH
+  vec3 center = vec3(0); // usually vec3(0.0)
+  ro.x = center.x + R * cos(yaw);
+  ro.y = center.y; // keep level; or add pitch later
+  ro.z = center.z + R * sin(yaw);
+
+  vec3 ta = center; // always look at the black hole
+  // vec3 ro = vec3(0.0, 4.0, -7.0);
+  // vec3 ta = vec3(0.0, 0.0, 0.0);
   float fov = radians(50.0);
 
   // Primary ray
@@ -94,11 +109,25 @@ vec3 render(vec2 p) {
 
   // Black hole (set rs=0.0 to disable lensing)
   BH bh;
-  float mouseX = 3.0 * (iMouse.x / iResolution.x) * 2.0 - 1.0;
-  float mouseY = 2.0 * (iMouse.y / iResolution.y) * 2.0 - 1.0;
-  float mouseRs = 0.02 + 0.1 * (iMouse.y / iResolution.y);
-  bh.pos = vec3(-1.0 * mouseX, 0.0 /*mouseY*/, 0.0);
-  bh.rs = mouseRs;
+
+  float mouseX = 1.0 * (iMouse.x / iResolution.x) * 2.0 - 1.0;
+  float mouseY = 1.0 * (iMouse.y / iResolution.y) * 2.0 - 1.0;
+  float mouseRs = 0.02 + 0.2 * (iMouse.y / iResolution.y);
+
+  /*
+    float radius = mouseRs;
+
+    if (isKeyPressed(Key_RightArrow))
+      radius += 0.01; // right arrow
+    if (isKeyPressed(Key_LeftArrow))
+      radius -= 0.01; // left arrow
+
+    radius = clamp(radius, 0.01, 5.0);
+    */
+
+  // bh.pos = vec3(-1.0 * mouseX, 0.0 /*mouseY*/, 0.0);
+  bh.pos = vec3(0.0);
+  bh.rs = radius;
 
   // Bend ray
   vec3 rdb = bendRay(ro, rd, bh);
