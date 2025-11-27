@@ -1,4 +1,9 @@
-#iChannel0 "self"
+// #iChannel0 "self"
+
+uniform sampler2D iChannel0;
+uniform int iFrame;
+uniform vec4 iMouse;
+uniform vec3 iResolution;
 
 const float PI = 3.14159265359;
 

@@ -1,7 +1,17 @@
+/*
 #iChannel0 "file://./blue_nebulae_2.png"
 #iChannel1 "file://./buf.glsl"
 #iKeyboard
 #iUniform float radius = 0.1 in{0.00, 0.4 }
+#iUniform float fov = 50 in{10, 80 }
+*/
+
+uniform sampler2D iChannel0;
+uniform sampler2D iChannel1;
+uniform vec3 iResolution;
+uniform vec4 iMouse;
+uniform float radius;
+uniform float fov;
 
 /* ============================================================
    Black-hole lensing with a spherical (equirectangular) sky map
@@ -84,7 +94,67 @@ vec3 sampleSkySpherical(vec3 dir) {
   uv.y = clamp(uv.y, 0.0, 1.0); // clamp V
   return texture(iChannel0, uv).rgb;
 }
+/*
+vec3 debugPattern(vec3 dir) {
+  dir = normalize(dir);
+  float phi = atan(dir.z, dir.x);              // [-π,π]
+  float theta = asin(clamp(dir.y, -1.0, 1.0)); // [-π/2,π/2]
 
+  // Normalize to [0,1]
+  float u = phi / (2.0 * PI) + 0.5;
+  float v = 0.5 - theta / PI;
+
+  // Big colored quadrants for orientation
+  // left/right: u < 0.5 vs u ≥ 0.5
+  // top/bottom: v < 0.5 vs v ≥ 0.5
+  vec3 base;
+  if (u < 0.5 && v < 0.5)
+    base = vec3(1, 0, 0); // red
+  else if (u >= 0.5 && v < 0.5)
+    base = vec3(0, 1, 0); // green
+  else if (u < 0.5 && v >= 0.5)
+    base = vec3(0, 0, 1); // blue
+  else
+    base = vec3(1, 1, 0); // yellow
+
+  // Optional: add grid lines in u,v
+  float gridU = step(0.95, fract(u * 8.0)); // 8 vertical bands
+  float gridV = step(0.95, fract(v * 4.0)); // 4 horizontal bands
+  float grid = max(gridU, gridV);
+
+  // Blend grid lines in white
+  return mix(base, vec3(1.0), grid * 0.6);
+}
+
+vec3 debugPattern2(vec3 dir) {
+  dir = normalize(dir);
+
+  float phi = atan(dir.z, dir.x);
+  float theta = asin(clamp(dir.y, -1.0, 1.0));
+
+  float u = phi / (2.0 * PI) + 0.5;
+  float v = 0.5 - theta / PI;
+
+  float ar = iResolution.y / iResolution.x;
+
+  float cu = floor(u * 64.0 * ar);
+  float cv = floor(v * 64.0);
+  float idx = mod(cu + cv, 4.0);
+
+  if (idx < 1.0)
+    return vec3(1, 0, 0); // red
+  if (idx < 2.0)
+    return vec3(0, 1, 0); // green
+  if (idx < 3.0)
+    return vec3(0, 0, 1); // blue
+  return vec3(1, 1, 0);   // yellow
+}
+
+/*float checkerAA(vec2 p) {
+  vec2 q = sin(PI * p * vec2(20, 10));
+  float m = q.x * q.y;
+  return .5 - m / fwidth(m);
+}*/
 /* ---------------------------- Render ----------------------------- */
 vec3 render(vec2 p) {
   // Camera
@@ -102,7 +172,8 @@ vec3 render(vec2 p) {
   vec3 ta = center; // always look at the black hole
   // vec3 ro = vec3(0.0, 4.0, -7.0);
   // vec3 ta = vec3(0.0, 0.0, 0.0);
-  float fov = radians(50.0);
+  float fov = 50.0; // delete me
+  fov = radians(fov);
 
   // Primary ray
   vec3 rd = makeRay(p, ro, ta, fov);
@@ -125,6 +196,7 @@ vec3 render(vec2 p) {
     radius = clamp(radius, 0.01, 5.0);
     */
 
+  float radius = 0.1; // delete me
   // bh.pos = vec3(-1.0 * mouseX, 0.0 /*mouseY*/, 0.0);
   bh.pos = vec3(0.0);
   bh.rs = radius;
@@ -134,7 +206,19 @@ vec3 render(vec2 p) {
   bool captured = (length(rdb) < 1e-5);
 
   // Sample spherical sky with bent direction
-  vec3 col = captured ? vec3(0.0) : sampleSkySpherical(rdb);
+  // vec3 col = captured ? vec3(0.0) : sampleSkySpherical(rdb);
+  vec3 col;
+  if (captured) {
+    col = vec3(0.0);
+  } else {
+    col = sampleSkySpherical(rdb);
+    // float ty = 0.5 + 0.5 * rdb.y;
+    // float tx = 0.5 + 0.5 * rdb.x;
+    // col = vec3(0.0, tx, ty);
+    // col = debugPattern2(rdb);
+    // col = );
+    // col = mix(vec3(0.1, 0.1, 0.1), vec3(0.0, 0.0, 1.0), t);
+  }
 
   return col;
 }

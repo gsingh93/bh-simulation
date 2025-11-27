@@ -1,499 +1,618 @@
 <!DOCTYPE html>
-<html lang='en'>
-<head>
-  <meta charset='UTF-8'>
-  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-  <title>Gravitational Lensing – Presentation</title>
-  <style>
-    :root {
-      --bg: #ffffff;
-      --bg-elevated: #f4f6fa;
-      --border-subtle: #d0d7e2;
-      --accent: #1a56db;
-      --text-main: #0a0f1a;
-      --text-muted: #1a1d27;
-    }
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gravitational Lensing – Presentation</title>
+    <style>
+      :root {
+        --bg: #ffffff;
+        --bg-elevated: #f4f6fa;
+        --border-subtle: #d0d7e2;
+        --accent: #1a56db;
+        --text-main: #0a0f1a;
+        --text-muted: #1a1d27;
+      }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-    body {
-      font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
-      background: #ffffff;
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      line-height: 1.75;
-      font-size: 1.3rem;
-    }
-
-    .page {
-      width: 100%;
-      max-width: 1200px;
-      min-height: 100vh;
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    header {
-      border-bottom: 1px solid var(--border-subtle);
-      padding-bottom: 1rem;
-    }
-
-    header h1 {
-      font-size: 3rem;
-      letter-spacing: 0.02em;
-      font-weight: 700;
-    }
-
-    header p {
-      margin-top: 0.35rem;
-      font-size: 0.95rem;
-      color: var(--text-main);
-    }
-
-    main.content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-      align-items: stretch;
-    }
-
-    .panel {
-      background: var(--bg-elevated);
-      border-radius: 1rem;
-      border: 1px solid var(--border-subtle);
-      padding: 1rem 1.1rem;
-      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .panel::before {
-      content: none;
-    }
-
-    .panel-inner {
-      position: relative;
-      z-index: 1;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .panel-title {
-      font-size: 0.9rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--accent);
-      opacity: 0.8;
-    }
-
-    ul {
-      margin-left: 1.75rem;
-    }
-
-    .panel-body {
-      padding-left: 0.75rem;
-      flex: 1;
-      font-size: 1.35rem;
-      color: var(--text-main);
-      line-height: 1.75;
-    }
-
-    .content-section {
-      margin-bottom: 2rem;
-    }
-
-    .content-section:last-child {
-      margin-bottom: 0;
-    }
-
-    .content-section h2 {
-      font-size: 1.5rem;
-      margin-bottom: 0.6rem;
-      color: var(--text-main);
-    }
-
-    .content-section p {
-      line-height: 1.5;
-    }
-
-    .shader-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .shader-canvas-wrapper {
-      position: relative;
-      flex: 1;
-      min-height: 260px;
-      border-radius: 0.75rem;
-      overflow: hidden;
-      border: 1px solid rgba(226, 183, 20, 0.35);
-      background: #000000;
-    }
-
-    canvas#shader-canvas {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    footer {
-      border-top: 1px solid var(--border-subtle);
-      padding-top: 0.75rem;
-      font-size: 0.8rem;
-      color: var(--text-main);
-      display: flex;
-      justify-content: space-between;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    .footer-left,
-    .footer-right {
-      display: flex;
-      gap: 0.75rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .pill {
-      border-radius: 999px;
-      border: 1px solid var(--border-subtle);
-      padding: 0.25rem 0.6rem;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--text-main);
-      background: rgba(5, 7, 18, 0.9);
-    }
-
-    @media (max-width: 900px) {
-      main.content {
-        grid-template-columns: 1fr;
+      body {
+        font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+        background: #ffffff;
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        line-height: 1.75;
+        font-size: 1.3rem;
       }
 
       .page {
-        padding-inline: 1rem;
+        width: 100%;
+        max-width: 1200px;
+        min-height: 100vh;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
       }
-    }
 
-    @media (max-width: 600px) {
+      header {
+        border-bottom: 1px solid var(--border-subtle);
+        padding-bottom: 1rem;
+      }
+
       header h1 {
-        font-size: 1.4rem;
+        font-size: 3rem;
+        letter-spacing: 0.02em;
+        font-weight: 700;
+      }
+
+      header p {
+        margin-top: 0.35rem;
+        font-size: 0.95rem;
+        color: var(--text-main);
+      }
+
+      main.content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        align-items: stretch;
       }
 
       .panel {
-        padding: 0.9rem;
+        background: var(--bg-elevated);
+        border-radius: 1rem;
+        border: 1px solid var(--border-subtle);
+        padding: 1rem 1.1rem;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+        position: relative;
+        overflow: hidden;
       }
-    }
-  </style>
-</head>
-<body>
-  <div class='page'>
-    <header>
-      <h1><!-- Title for your presentation goes here --></h1>
-      <p><!-- Optional subtitle or short description --></p>
-    </header>
 
-    <main class='content'>
-      <section class='panel' aria-label='Presentation content'>
-        <div class='panel-inner'>
-          <div class='panel-title'>Overview</div>
-          <div class='panel-body'>
-            <section class='content-section'>
-              <h2>What Is Gravitational Lensing?</h2>
-              <ul>
-                <li>Gravity bends light.</li>
-                <li>Mass curves spacetime; light follows that curvature.</li>
-                <li>Light still travels straight — space itself is what’s bent.</li>
-                <li>More mass → stronger bending.</li>
-                <li>Lensing can stretch, magnify, or duplicate background objects.</li>
-                <li>Helps reveal objects too faint or distant to see otherwise.</li>
-                <li>Occurs around galaxies, clusters, and black holes.</li>
-              </ul>
-            </section>
+      .panel::before {
+        content: none;
+      }
 
-            <section class='content-section'>
-              <h2>Types of Gravitational Lensing</h2>
-              <ul>
-                <li>Strong lensing: arcs, rings, multiple images.</li>
-                <li>Weak lensing: small shape distortions used to map dark matter.</li>
-                <li>Microlensing: temporary brightening when objects align.</li>
-              </ul>
-            </section>
+      .panel-inner {
+        position: relative;
+        z-index: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
 
-            <section class='content-section'>
-              <h2>Real Astronomical Examples</h2>
+      .panel-title {
+        font-size: 0.9rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--accent);
+        opacity: 0.8;
+      }
 
-              <div class='content-section'>
-                <h3>Einstein Rings</h3>
-                <p>These form when a massive object sits almost perfectly between us and a distant galaxy, bending the light into a circle.</p>
-                <figure style="max-width:90%; margin:1rem auto; text-align:center;">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/1/11/A_Horseshoe_Einstein_Ring_from_Hubble.JPG" alt="Einstein Ring" style="width:100%; border-radius:0.5rem;">
-                  <figcaption style="font-size:1rem; margin-top:0.4rem; color:var(--text-main);">Einstein Ring observed by Hubble.</figcaption>
-                </figure>
-              </div>
+      ul {
+        margin-left: 1.75rem;
+      }
 
-              <div class='content-section'>
-                <h3>Galaxy Cluster Lensing</h3>
-                <p>Huge clusters contain enough mass to stretch and distort light from many background galaxies, producing arcs and smeared shapes.</p>
-                <figure style="max-width:90%; margin:1rem auto; text-align:center;">
-                  <img src="https://assets.science.nasa.gov/content/dam/science/missions/hubble/releases/2005/11/STScI-01EVVM6VGK8B31GGMRPTDWD986.jpg/jcr%3Acontent/renditions/800x466.jpg" alt="Galaxy Cluster Lensing" style="width:100%; border-radius:0.5rem;">
-                  <figcaption style="font-size:1rem; margin-top:0.4rem; color:var(--text-main);">Galaxy cluster lensing background galaxies.</figcaption>
-                </figure>
-              </div>
+      .panel-body {
+        padding-left: 0.75rem;
+        flex: 1;
+        font-size: 1.35rem;
+        color: var(--text-main);
+        line-height: 1.75;
+      }
 
-              <div class='content-section'>
-                <h3>Lensed Background Galaxies</h3>
-                <p>When a single distant galaxy lies behind a massive object, its image can be stretched into long arcs or duplicated.</p>
-                <figure style="max-width:90%; margin:1rem auto; text-align:center;">
-                  <img src="https://live.staticflickr.com/7539/15861603283_3579db3fc6_o.jpg" alt="Lensed Galaxy" style="width:100%; border-radius:0.5rem;">
-                  <figcaption style="font-size:1rem; margin-top:0.4rem; color:var(--text-main);">A distant galaxy stretched into an arc by lensing.</figcaption>
-                </figure>
-              </div>
-            </section>
+      .content-section {
+        margin-bottom: 2rem;
+      }
 
-            <section class='content-section'>
-              <h2>Black Hole Lensing Examples</h2>
-              <div class='content-section'>
-                <h3>S2 Lensing by Sgr A*</h3>
-                <p>Precise measurements show the position of the star S2 shifting slightly as its light is bent by the Milky Way's central black hole.</p>
-                <figure style="max-width:90%; margin:1rem auto; text-align:center;">
-                  <img src="https://www.eso.org/public/archives/images/screen/eso2118a.jpg" alt="S2 Lensing by Sgr A*" style="width:100%; border-radius:0.5rem;">
-                  <figcaption style="font-size:1rem; margin-top:0.4rem; color:var(--text-main);">Orbit of star S2 with relativistic effects, including lensing by Sgr A*.</figcaption>
-                </figure>
-              </div>
+      .content-section:last-child {
+        margin-bottom: 0;
+      }
 
-              <div class='content-section'>
-                <h3>X-ray Flares Near Sgr A*</h3>
-                <p>Hot spots orbiting very close to the event horizon can produce lensed secondary images as their light curves around the black hole.</p>
-                <figure style="max-width:90%; margin:1rem auto; text-align:center;">
-                  <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Flaring_Disk_Around_Milky_Way%27s_Black_Hole_%28Artist%27s_Concept%29_%282025-110%29.png" alt="X-ray Flare Lensing" style="width:100%; border-radius:0.5rem;">
-                  <figcaption style="font-size:1rem; margin-top:0.4rem; color:var(--text-main);">Illustration of X-ray flares producing multiple images near Sgr A*.</figcaption>
-                </figure>
-              </div>
+      .content-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.6rem;
+        color: var(--text-main);
+      }
 
-              <div class='content-section'>
-                <h3>Isolated Black Hole Microlensing</h3>
-                <p>In OGLE-2011-BLG-0462, a single stellar-mass black hole was detected by the way it briefly magnified a background star.</p>
-                <figure style="max-width:90%; margin:1rem auto; text-align:center;">
-                  <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Microlensing-black-hole_MOA-2011-BLG-191.jpg" alt="Isolated Black Hole Microlensing" style="width:100%; border-radius:0.5rem;">
-                  <figcaption style="font-size:1rem; margin-top:0.4rem; color:var(--text-main);">Hubble data revealing a free-floating black hole via microlensing.</figcaption>
-                </figure>
-              </div>
+      .content-section p {
+        line-height: 1.5;
+      }
 
-              <div class='content-section'>
-                <h3>Quasar Microlensing (Einstein Cross)</h3>
-                <p>The four images of a distant quasar are further brightened and dimmed by smaller lenses in the foreground galaxy, including black holes.</p>
-                <figure style="max-width:90%; margin:1rem auto; text-align:center;">
-                  <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Einstein_cross.jpg" alt="Einstein Cross" style="width:100%; border-radius:0.5rem;">
-                  <figcaption style="font-size:1rem; margin-top:0.4rem; color:var(--text-main);">The Einstein Cross quasar, where microlensing probes compact objects in the lensing galaxy.</figcaption>
-                </figure>
-              </div>
+      .shader-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
 
-              <div class='content-section'>
-                <h3>Photon Ring Around M87*</h3>
-                <p>The Event Horizon Telescope image of M87* shows light bent into a ring by the black hole's gravity, a different but related form of light bending.</p>
-                <figure style="max-width:90%; margin:1rem auto; text-align:center;">
-                  <img src="https://www.eso.org/public/archives/images/screen/eso1907a.jpg" alt="M87* EHT Image" style="width:100%; border-radius:0.5rem;">
-                  <figcaption style="font-size:1rem; margin-top:0.4rem; color:var(--text-main);">Event Horizon Telescope image of the photon ring around M87*.</figcaption>
-                </figure>
-              </div>
-            </section>
+      .shader-canvas-wrapper {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        border: 1px solid rgba(226, 183, 20, 0.35);
+        background: #000000;
+      }
 
-            <section class='content-section'>
-              <h2>What Gravitational Lensing Reveals</h2>
-              <ul>
-                <li>Evidence for dark matter.</li>
-                <li>Mass measurement of galaxies and clusters.</li>
-                <li>Magnification of distant faint galaxies.</li>
-              </ul>
-            </section>
+      canvas#glcanvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
 
-            <section class='content-section'>
-              <h2>Shader Demo Overview</h2>
-              <ul>
-                <li>Light bending near a compact mass.</li>
-                <li>Strong bending produces stretching or duplication.</li>
-                <li>Visual analogy, not a full GR simulation.</li>
-              </ul>
-            </section>
+      footer {
+        border-top: 1px solid var(--border-subtle);
+        padding-top: 0.75rem;
+        font-size: 0.8rem;
+        color: var(--text-main);
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .footer-left,
+      .footer-right {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .pill {
+        border-radius: 999px;
+        border: 1px solid var(--border-subtle);
+        padding: 0.25rem 0.6rem;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--text-main);
+        background: rgba(5, 7, 18, 0.9);
+      }
+
+      @media (max-width: 900px) {
+        main.content {
+          grid-template-columns: 1fr;
+        }
+
+        .page {
+          padding-inline: 1rem;
+        }
+      }
+
+      @media (max-width: 600px) {
+        header h1 {
+          font-size: 1.4rem;
+        }
+
+        .panel {
+          padding: 0.9rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <h1><!-- Title for your presentation goes here --></h1>
+        <p><!-- Optional subtitle or short description --></p>
+      </header>
+
+      <main class="content">
+        <section class="panel" aria-label="Presentation content">
+          <div class="panel-inner">
+            <div class="panel-title">Overview</div>
+            <div class="panel-body">
+              <section class="content-section">
+                <h2>What Is Gravitational Lensing?</h2>
+                <ul>
+                  <li>Gravity bends light.</li>
+                  <li>Mass curves spacetime; light follows that curvature.</li>
+                  <li>
+                    Light still travels straight — space itself is what’s bent.
+                  </li>
+                  <li>More mass → stronger bending.</li>
+                  <li>
+                    Lensing can stretch, magnify, or duplicate background
+                    objects.
+                  </li>
+                  <li>
+                    Helps reveal objects too faint or distant to see otherwise.
+                  </li>
+                  <li>Occurs around galaxies, clusters, and black holes.</li>
+                </ul>
+              </section>
+
+              <section class="content-section">
+                <h2>Types of Gravitational Lensing</h2>
+                <ul>
+                  <li>Strong lensing: arcs, rings, multiple images.</li>
+                  <li>
+                    Weak lensing: small shape distortions used to map dark
+                    matter.
+                  </li>
+                  <li>
+                    Microlensing: temporary brightening when objects align.
+                  </li>
+                </ul>
+              </section>
+
+              <section class="content-section">
+                <h2>Real Astronomical Examples</h2>
+
+                <div class="content-section">
+                  <h3>Einstein Rings</h3>
+                  <p>
+                    These form when a massive object sits almost perfectly
+                    between us and a distant galaxy, bending the light into a
+                    circle.
+                  </p>
+                  <figure
+                    style="
+                      max-width: 90%;
+                      margin: 1rem auto;
+                      text-align: center;
+                    "
+                  >
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/1/11/A_Horseshoe_Einstein_Ring_from_Hubble.JPG"
+                      alt="Einstein Ring"
+                      style="width: 100%; border-radius: 0.5rem"
+                    />
+                    <figcaption
+                      style="
+                        font-size: 1rem;
+                        margin-top: 0.4rem;
+                        color: var(--text-main);
+                      "
+                    >
+                      Einstein Ring observed by Hubble.
+                    </figcaption>
+                  </figure>
+                </div>
+
+                <div class="content-section">
+                  <h3>Galaxy Cluster Lensing</h3>
+                  <p>
+                    Huge clusters contain enough mass to stretch and distort
+                    light from many background galaxies, producing arcs and
+                    smeared shapes.
+                  </p>
+                  <figure
+                    style="
+                      max-width: 90%;
+                      margin: 1rem auto;
+                      text-align: center;
+                    "
+                  >
+                    <img
+                      src="https://assets.science.nasa.gov/content/dam/science/missions/hubble/releases/2005/11/STScI-01EVVM6VGK8B31GGMRPTDWD986.jpg/jcr%3Acontent/renditions/800x466.jpg"
+                      alt="Galaxy Cluster Lensing"
+                      style="width: 100%; border-radius: 0.5rem"
+                    />
+                    <figcaption
+                      style="
+                        font-size: 1rem;
+                        margin-top: 0.4rem;
+                        color: var(--text-main);
+                      "
+                    >
+                      Galaxy cluster lensing background galaxies.
+                    </figcaption>
+                  </figure>
+                </div>
+
+                <div class="content-section">
+                  <h3>Lensed Background Galaxies</h3>
+                  <p>
+                    When a single distant galaxy lies behind a massive object,
+                    its image can be stretched into long arcs or duplicated.
+                  </p>
+                  <figure
+                    style="
+                      max-width: 90%;
+                      margin: 1rem auto;
+                      text-align: center;
+                    "
+                  >
+                    <img
+                      src="https://live.staticflickr.com/7539/15861603283_3579db3fc6_o.jpg"
+                      alt="Lensed Galaxy"
+                      style="width: 100%; border-radius: 0.5rem"
+                    />
+                    <figcaption
+                      style="
+                        font-size: 1rem;
+                        margin-top: 0.4rem;
+                        color: var(--text-main);
+                      "
+                    >
+                      A distant galaxy stretched into an arc by lensing.
+                    </figcaption>
+                  </figure>
+                </div>
+              </section>
+
+              <section class="content-section">
+                <h2>Black Hole Lensing Examples</h2>
+                <div class="content-section">
+                  <h3>S2 Lensing by Sgr A*</h3>
+                  <p>
+                    Precise measurements show the position of the star S2
+                    shifting slightly as its light is bent by the Milky Way's
+                    central black hole.
+                  </p>
+                  <figure
+                    style="
+                      max-width: 90%;
+                      margin: 1rem auto;
+                      text-align: center;
+                    "
+                  >
+                    <img
+                      src="https://www.eso.org/public/archives/images/screen/eso2118a.jpg"
+                      alt="S2 Lensing by Sgr A*"
+                      style="width: 100%; border-radius: 0.5rem"
+                    />
+                    <figcaption
+                      style="
+                        font-size: 1rem;
+                        margin-top: 0.4rem;
+                        color: var(--text-main);
+                      "
+                    >
+                      Orbit of star S2 with relativistic effects, including
+                      lensing by Sgr A*.
+                    </figcaption>
+                  </figure>
+                </div>
+
+                <div class="content-section">
+                  <h3>X-ray Flares Near Sgr A*</h3>
+                  <p>
+                    Hot spots orbiting very close to the event horizon can
+                    produce lensed secondary images as their light curves around
+                    the black hole.
+                  </p>
+                  <figure
+                    style="
+                      max-width: 90%;
+                      margin: 1rem auto;
+                      text-align: center;
+                    "
+                  >
+                    <img
+                      src="https://commons.wikimedia.org/wiki/Special:FilePath/Flaring_Disk_Around_Milky_Way%27s_Black_Hole_%28Artist%27s_Concept%29_%282025-110%29.png"
+                      alt="X-ray Flare Lensing"
+                      style="width: 100%; border-radius: 0.5rem"
+                    />
+                    <figcaption
+                      style="
+                        font-size: 1rem;
+                        margin-top: 0.4rem;
+                        color: var(--text-main);
+                      "
+                    >
+                      Illustration of X-ray flares producing multiple images
+                      near Sgr A*.
+                    </figcaption>
+                  </figure>
+                </div>
+
+                <div class="content-section">
+                  <h3>Isolated Black Hole Microlensing</h3>
+                  <p>
+                    In OGLE-2011-BLG-0462, a single stellar-mass black hole was
+                    detected by the way it briefly magnified a background star.
+                  </p>
+                  <figure
+                    style="
+                      max-width: 90%;
+                      margin: 1rem auto;
+                      text-align: center;
+                    "
+                  >
+                    <img
+                      src="https://commons.wikimedia.org/wiki/Special:FilePath/Microlensing-black-hole_MOA-2011-BLG-191.jpg"
+                      alt="Isolated Black Hole Microlensing"
+                      style="width: 100%; border-radius: 0.5rem"
+                    />
+                    <figcaption
+                      style="
+                        font-size: 1rem;
+                        margin-top: 0.4rem;
+                        color: var(--text-main);
+                      "
+                    >
+                      Hubble data revealing a free-floating black hole via
+                      microlensing.
+                    </figcaption>
+                  </figure>
+                </div>
+
+                <div class="content-section">
+                  <h3>Quasar Microlensing (Einstein Cross)</h3>
+                  <p>
+                    The four images of a distant quasar are further brightened
+                    and dimmed by smaller lenses in the foreground galaxy,
+                    including black holes.
+                  </p>
+                  <figure
+                    style="
+                      max-width: 90%;
+                      margin: 1rem auto;
+                      text-align: center;
+                    "
+                  >
+                    <img
+                      src="https://commons.wikimedia.org/wiki/Special:FilePath/Einstein_cross.jpg"
+                      alt="Einstein Cross"
+                      style="width: 100%; border-radius: 0.5rem"
+                    />
+                    <figcaption
+                      style="
+                        font-size: 1rem;
+                        margin-top: 0.4rem;
+                        color: var(--text-main);
+                      "
+                    >
+                      The Einstein Cross quasar, where microlensing probes
+                      compact objects in the lensing galaxy.
+                    </figcaption>
+                  </figure>
+                </div>
+
+                <div class="content-section">
+                  <h3>Photon Ring Around M87*</h3>
+                  <p>
+                    The Event Horizon Telescope image of M87* shows light bent
+                    into a ring by the black hole's gravity, a different but
+                    related form of light bending.
+                  </p>
+                  <figure
+                    style="
+                      max-width: 90%;
+                      margin: 1rem auto;
+                      text-align: center;
+                    "
+                  >
+                    <img
+                      src="https://www.eso.org/public/archives/images/screen/eso1907a.jpg"
+                      alt="M87* EHT Image"
+                      style="width: 100%; border-radius: 0.5rem"
+                    />
+                    <figcaption
+                      style="
+                        font-size: 1rem;
+                        margin-top: 0.4rem;
+                        color: var(--text-main);
+                      "
+                    >
+                      Event Horizon Telescope image of the photon ring around
+                      M87*.
+                    </figcaption>
+                  </figure>
+                </div>
+              </section>
+
+              <section class="content-section">
+                <h2>What Gravitational Lensing Reveals</h2>
+                <ul>
+                  <li>Evidence for dark matter.</li>
+                  <li>Mass measurement of galaxies and clusters.</li>
+                  <li>Magnification of distant faint galaxies.</li>
+                </ul>
+              </section>
+
+              <section class="content-section">
+                <h2>Shader Demo Overview</h2>
+                <ul>
+                  <li>Light bending near a compact mass.</li>
+                  <li>Strong bending produces stretching or duplication.</li>
+                  <li>Visual analogy, not a full GR simulation.</li>
+                </ul>
+              </section>
+            </div>
           </div>
+        </section>
+
+        <section class="panel shader-panel" aria-label="Shader demonstration">
+          <div class="panel-inner">
+            <div class="panel-title">Live Demo</div>
+            <div class="shader-canvas-wrapper">
+              <!-- The canvas where you will render your shader -->
+              <canvas id="glcanvas"></canvas>
+            </div>
+            <div class="panel-body">
+              <!-- Add short instructions or labels for the demo here (optional) -->
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <div class="footer-left">
+          <span class="pill"><!-- e.g. Session / course name --></span>
         </div>
-      </section>
-
-      <section class='panel shader-panel' aria-label='Shader demonstration'>
-        <div class='panel-inner'>
-          <div class='panel-title'>Live Demo</div>
-          <div class='shader-canvas-wrapper'>
-            <!-- The canvas where you will render your shader -->
-            <canvas id='shader-canvas'></canvas>
-          </div>
-          <div class='panel-body'>
-            <!-- Add short instructions or labels for the demo here (optional) -->
-          </div>
+        <div class="footer-right">
+          <span class="pill"><!-- e.g. Your name / date --></span>
         </div>
-      </section>
-    </main>
+      </footer>
+    </div>
 
-    <footer>
-      <div class='footer-left'>
-        <span class='pill'><!-- e.g. Session / course name --></span>
-      </div>
-      <div class='footer-right'>
-        <span class='pill'><!-- e.g. Your name / date --></span>
-      </div>
-    </footer>
-  </div>
+    <script src="https://cdn.jsdelivr.net/gh/Tezumie/ShaderMate@main/src/shaderMate.js"></script>
 
-  <script>
-  const canvas = document.getElementById('shader-canvas');
-  let gl, program;
-  let iResolutionLoc, iTimeLoc;
-  let positionLoc;
-
-  async function loadShaderSource(url) {
-    const res = await fetch(url);
-    if (!res.ok) {
-      throw new Error('Failed to load shader: ' + res.status + ' ' + res.statusText);
-    }
-    return await res.text();
-  }
-
-  function compileShader(type, source) {
-    const s = gl.createShader(type);
-    gl.shaderSource(s, source);
-    gl.compileShader(s);
-    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
-      console.error(gl.getShaderInfoLog(s));
-      throw new Error('Shader compile error');
-    }
-    return s;
-  }
-
-  function createProgram(vertexSrc, fragmentSrc) {
-    const vs = compileShader(gl.VERTEX_SHADER, vertexSrc);
-    const fs = compileShader(gl.FRAGMENT_SHADER, fragmentSrc);
-
-    const prog = gl.createProgram();
-    gl.attachShader(prog, vs);
-    gl.attachShader(prog, fs);
-    gl.linkProgram(prog);
-
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
-      console.error(gl.getProgramInfoLog(prog));
-      throw new Error('Program link error');
-    }
-    return prog;
-  }
-
-  async function initWebGL() {
-    if (!canvas) return;
-
-    gl = canvas.getContext('webgl');
-    if (!gl) {
-      alert('WebGL not supported');
-      return;
-    }
-
-    const vertexSrc = `
-      attribute vec2 position;
-      void main() {
-        gl_Position = vec4(position, 0.0, 1.0);
+    <script>
+      function showShaderError(msg) {
+        const el = document.createElement("div");
+        el.style.position = "fixed";
+        el.style.top = "1rem";
+        el.style.right = "1rem";
+        el.style.background = "rgba(200,0,0,0.85)";
+        el.style.color = "#fff";
+        el.style.padding = "1rem 1.25rem";
+        el.style.borderRadius = "0.5rem";
+        el.style.maxWidth = "420px";
+        el.style.zIndex = 999999;
+        el.style.fontFamily = "monospace";
+        el.style.whiteSpace = "pre-wrap";
+        el.style.fontSize = "0.85rem";
+        el.textContent = msg;
+        document.body.appendChild(el);
       }
-    `;
 
-    // Load Shadertoy-style fragment shader that defines mainImage(), not main()
-    const shaderSource = await loadShaderSource('bh-spherical.glsl');
+      window.addEventListener("error", (e) => {
+        showShaderError("Runtime error:\n\n" + e.message);
+      });
+      window.addEventListener("unhandledrejection", (e) => {
+        showShaderError("Unhandled Promise Rejection:\n\n" + e.reason);
+      });
 
-    // Wrap it with a small main() that calls mainImage()
-    const fragmentSrc = `
-    precision lowp float;
-    uniform vec3 iResolution;
-    uniform float iTime;
-    uniform vec4 iMouse;
-    ` + shaderSource + `
-      void main() {
-        vec4 color;
-        mainImage(color, gl_FragCoord.xy);
-        gl_FragColor = color;
-      }
-    `;
+      document.addEventListener("DOMContentLoaded", () => {
+        try {
+          ShaderMate.startShaderMate([
+            // Buffer pass (offscreen)
+            {
+              name: "BufferA",
+              src: "./buf.glsl", // your buffer shader
+              size: "screen",
+              screen: false, // render to FBO, not directly to canvas
+            },
 
-    program = createProgram(vertexSrc, fragmentSrc);
-    gl.useProgram(program);
-
-    // Fullscreen quad
-    const positionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array([
-        -1, -1,
-         1, -1,
-        -1,  1,
-         1,  1
-      ]),
-      gl.STATIC_DRAW
-    );
-
-    positionLoc = gl.getAttribLocation(program, 'position');
-    gl.enableVertexAttribArray(positionLoc);
-    gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
-
-    iResolutionLoc = gl.getUniformLocation(program, 'iResolution');
-    iTimeLoc = gl.getUniformLocation(program, 'iTime');
-
-    resizeCanvas();
-    requestAnimationFrame(render);
-  }
-
-  function resizeCanvas() {
-    if (!canvas || !gl) return;
-    const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    gl.viewport(0, 0, canvas.width, canvas.height);
-
-    if (iResolutionLoc) {
-      gl.uniform3f(iResolutionLoc, canvas.width, canvas.height, 1.0);
-    }
-  }
-
-  function render(time) {
-    if (!gl || !program) return;
-
-    if (iTimeLoc) {
-      gl.uniform1f(iTimeLoc, time * 0.001);
-    }
-
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    requestAnimationFrame(render);
-  }
-
-  window.addEventListener('resize', resizeCanvas);
-
-  window.addEventListener('load', () => {
-    // Note: for fetch('shader.frag') to work, serve this over http(s) rather than file://
-    initWebGL().catch(err => console.error(err));
-  });
-</script>
-</body>
+            // Main pass (to screen)
+            {
+              name: "Main",
+              src: "./frag.glsl", // your main Shadertoy-style shader
+              size: "screen",
+              screen: true,
+              channels: [
+                // iChannel0: image texture
+                {
+                  url: "./blue_nebulae_2.png",
+                  filter: "linear", // or 'nearest'
+                  wrap: "clamp", // or 'repeat'
+                  flipY: true, // usually true for standard images
+                },
+                // iChannel1: buffer from BufferA
+                {
+                  id: "BufferA", // connects to the pass named 'BufferA'
+                },
+              ],
+            },
+          ]);
+        } catch (err) {
+          showShaderError("Shader initialization error:\n\n" + err.message);
+        }
+      });
+    </script>
+  </body>
 </html>
