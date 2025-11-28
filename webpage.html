@@ -660,12 +660,6 @@
         function initShaderGraph() {
           return ShaderMate.startShaderMate([
             {
-              name: "BufferA",
-              src: "./buf.glsl",
-              size: "screen",
-              screen: false,
-            },
-            {
               name: "Main",
               src: "./frag.glsl",
               size: "screen",
@@ -676,9 +670,6 @@
                   filter: "linear",
                   wrap: "clamp",
                   flipY: true,
-                },
-                {
-                  id: "BufferA",
                 },
               ],
               uniforms: {
