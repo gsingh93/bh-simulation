@@ -165,8 +165,14 @@ vec3 render(vec2 p) {
   vec3 ro;
   float mx = iMouse.x;           // mouse X in pixels
   float sx = mx / iResolution.x; // 0..1
-  float yaw = sx * 2.0 * PI;     // 0..2π
-  // float yaw = texture(iChannel1, vec2(0.5, 0.5)).r + 1.0;
+
+  // In the browser the iChannel0 approach doesn't work
+  #if vscode == 0
+    float yaw = sx * 2.0 * PI;     // 0..2π
+  #else
+    float yaw = texture(iChannel1, vec2(0.5, 0.5)).r + 1.0;
+  #endif
+
   float R = 4.0;         // distance from BH
   vec3 center = vec3(0); // usually vec3(0.0)
   ro.x = center.x + R * cos(yaw);
