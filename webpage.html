@@ -536,7 +536,9 @@
               style="
                 margin-top: 0.5rem;
                 display: flex;
-                justify-content: flex-start;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 0.75rem;
               "
             >
               <button
@@ -553,6 +555,50 @@
               >
                 Paused ▶
               </button>
+
+              <div style="display: flex; align-items: center; gap: 0.35rem">
+                <label for="radius-slider" style="font-size: 0.9rem"
+                  >Radius:</label
+                >
+                <input
+                  id="radius-slider"
+                  type="range"
+                  min="0.0"
+                  max="0.4"
+                  step="0.005"
+                  value="0.1"
+                  style="width: 160px"
+                />
+                <span
+                  id="radius-value"
+                  style="
+                    font-size: 0.85rem;
+                    min-width: 3.5rem;
+                    text-align: right;
+                  "
+                ></span>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 0.35rem">
+                <label for="fov-slider" style="font-size: 0.9rem">FOV:</label>
+                <input
+                  id="fov-slider"
+                  type="range"
+                  min="10"
+                  max="80"
+                  step="1"
+                  value="50"
+                  style="width: 160px"
+                />
+                <span
+                  id="fov-value"
+                  style="
+                    font-size: 0.85rem;
+                    min-width: 3.5rem;
+                    text-align: right;
+                  "
+                ></span>
+              </div>
             </div>
             <div class="panel-body">
               <!-- Add short instructions or labels for the demo here (optional) -->
@@ -576,6 +622,29 @@
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const btn = document.getElementById("shader-toggle");
+        const radiusSlider = document.getElementById("radius-slider");
+        const radiusLabel = document.getElementById("radius-value");
+        const fovSlider = document.getElementById("fov-slider");
+        const fovLabel = document.getElementById("fov-value");
+
+        // Default uniform values (match GLSL defaults / UI defaults)
+        const radiusUniform = {
+          type: "1f",
+          value: radiusSlider ? parseFloat(radiusSlider.value) || 0.1 : 0.1,
+        };
+        const fovUniform = {
+          type: "1f",
+          value: fovSlider ? parseFloat(fovSlider.value) || 50.0 : 50.0,
+        };
+
+        // Reflect initial values in labels
+        if (radiusLabel && radiusSlider) {
+          radiusLabel.textContent = radiusUniform.value.toFixed(3);
+        }
+        if (fovLabel && fovSlider) {
+          fovLabel.textContent = fovUniform.value.toFixed(1);
+        }
+
         let shaderInstance = null;
         let paused = true;
 
@@ -603,6 +672,10 @@
                 id: "BufferA",
               },
             ],
+            uniforms: {
+              radius: radiusUniform,
+              fov: fovUniform,
+            },
           },
         ])
           .then((sm) => {
@@ -616,8 +689,31 @@
             console.error("ShaderMate init error:", err);
           });
 
+        // Hook up sliders to uniforms
+        if (radiusSlider) {
+          radiusSlider.addEventListener("input", () => {
+            const v = parseFloat(radiusSlider.value) || 0.0;
+            radiusUniform.value = v;
+            if (radiusLabel) {
+              radiusLabel.textContent = v.toFixed(3);
+            }
+          });
+        }
+
+        if (fovSlider) {
+          fovSlider.addEventListener("input", () => {
+            const v = parseFloat(fovSlider.value) || 0.0;
+            fovUniform.value = v;
+            if (fovLabel) {
+              fovLabel.textContent = v.toFixed(1);
+            }
+          });
+        }
+
+        // Pause / resume button
         if (btn) {
           btn.addEventListener("click", () => {
+            //if (!shaderInstance) return;
             if (paused) {
               shaderInstance.resume();
               btn.textContent = "Pause ❚❚";

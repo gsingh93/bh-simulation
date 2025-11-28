@@ -172,8 +172,8 @@ vec3 render(vec2 p) {
   vec3 ta = center; // always look at the black hole
   // vec3 ro = vec3(0.0, 4.0, -7.0);
   // vec3 ta = vec3(0.0, 0.0, 0.0);
-  float fov = 50.0; // delete me
-  fov = radians(fov);
+  // float fov = 50.0; // delete me
+  float fov = radians(fov);
 
   // Primary ray
   vec3 rd = makeRay(p, ro, ta, fov);
@@ -196,8 +196,8 @@ vec3 render(vec2 p) {
     radius = clamp(radius, 0.01, 5.0);
     */
 
-  float radius = 0.1; // delete me
-  // bh.pos = vec3(-1.0 * mouseX, 0.0 /*mouseY*/, 0.0);
+  // float radius = 0.1; // delete me
+  //  bh.pos = vec3(-1.0 * mouseX, 0.0 /*mouseY*/, 0.0);
   bh.pos = vec3(0.0);
   bh.rs = radius;
 
