@@ -529,8 +529,30 @@
           <div class="panel-inner">
             <div class="panel-title">Live Demo</div>
             <div class="shader-canvas-wrapper">
-              <!-- The canvas where you will render your shader -->
               <canvas id="glcanvas"></canvas>
+            </div>
+            <div
+              class="shader-controls"
+              style="
+                margin-top: 0.5rem;
+                display: flex;
+                justify-content: flex-start;
+              "
+            >
+              <button
+                id="shader-toggle"
+                style="
+                  padding: 0.5rem 1rem;
+                  font-size: 1rem;
+                  border-radius: 0.5rem;
+                  border: 1px solid var(--border-subtle);
+                  cursor: pointer;
+                  background: var(--bg-elevated);
+                  color: var(--text-main);
+                "
+              >
+                Paused ▶
+              </button>
             </div>
             <div class="panel-body">
               <!-- Add short instructions or labels for the demo here (optional) -->
@@ -552,65 +574,59 @@
     <script src="https://cdn.jsdelivr.net/gh/Tezumie/ShaderMate@main/src/shaderMate.js"></script>
 
     <script>
-      function showShaderError(msg) {
-        const el = document.createElement("div");
-        el.style.position = "fixed";
-        el.style.top = "1rem";
-        el.style.right = "1rem";
-        el.style.background = "rgba(200,0,0,0.85)";
-        el.style.color = "#fff";
-        el.style.padding = "1rem 1.25rem";
-        el.style.borderRadius = "0.5rem";
-        el.style.maxWidth = "420px";
-        el.style.zIndex = 999999;
-        el.style.fontFamily = "monospace";
-        el.style.whiteSpace = "pre-wrap";
-        el.style.fontSize = "0.85rem";
-        el.textContent = msg;
-        document.body.appendChild(el);
-      }
-
-      window.addEventListener("error", (e) => {
-        showShaderError("Runtime error:\n\n" + e.message);
-      });
-      window.addEventListener("unhandledrejection", (e) => {
-        showShaderError("Unhandled Promise Rejection:\n\n" + e.reason);
-      });
-
       document.addEventListener("DOMContentLoaded", () => {
-        try {
-          ShaderMate.startShaderMate([
-            // Buffer pass (offscreen)
-            {
-              name: "BufferA",
-              src: "./buf.glsl", // your buffer shader
-              size: "screen",
-              screen: false, // render to FBO, not directly to canvas
-            },
+        const btn = document.getElementById("shader-toggle");
+        let shaderInstance = null;
+        let paused = true;
 
-            // Main pass (to screen)
-            {
-              name: "Main",
-              src: "./frag.glsl", // your main Shadertoy-style shader
-              size: "screen",
-              screen: true,
-              channels: [
-                // iChannel0: image texture
-                {
-                  url: "./blue_nebulae_2.png",
-                  filter: "linear", // or 'nearest'
-                  wrap: "clamp", // or 'repeat'
-                  flipY: true, // usually true for standard images
-                },
-                // iChannel1: buffer from BufferA
-                {
-                  id: "BufferA", // connects to the pass named 'BufferA'
-                },
-              ],
-            },
-          ]);
-        } catch (err) {
-          showShaderError("Shader initialization error:\n\n" + err.message);
+        // Start ShaderMate and wait for the instance (Promise-based API)
+        ShaderMate.startShaderMate([
+          {
+            name: "BufferA",
+            src: "./buf.glsl",
+            size: "screen",
+            screen: false,
+          },
+          {
+            name: "Main",
+            src: "./frag.glsl",
+            size: "screen",
+            screen: true,
+            channels: [
+              {
+                url: "./blue_nebulae_2.png",
+                filter: "linear",
+                wrap: "clamp",
+                flipY: true,
+              },
+              {
+                id: "BufferA",
+              },
+            ],
+          },
+        ])
+          .then((sm) => {
+            shaderInstance = sm;
+            sm.pause(); // start paused
+            if (btn) {
+              btn.textContent = "Resume ▶";
+            }
+          })
+          .catch((err) => {
+            console.error("ShaderMate init error:", err);
+          });
+
+        if (btn) {
+          btn.addEventListener("click", () => {
+            if (paused) {
+              shaderInstance.resume();
+              btn.textContent = "Pause ❚❚";
+            } else {
+              shaderInstance.pause();
+              btn.textContent = "Resume ▶";
+            }
+            paused = !paused;
+          });
         }
       });
     </script>
