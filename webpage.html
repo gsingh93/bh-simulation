@@ -556,10 +556,8 @@
                 Paused ▶
               </button>
 
-              <div style="display: flex; align-items: center; gap: 0.35rem">
-                <label for="radius-slider" style="font-size: 0.9rem"
-                  >Radius:</label
-                >
+              <div style="display: flex; align-items: center; gap: 0.35rem;">
+                <label for="radius-slider" style="font-size: 0.9rem;">Radius:</label>
                 <input
                   id="radius-slider"
                   type="range"
@@ -567,20 +565,16 @@
                   max="0.4"
                   step="0.005"
                   value="0.1"
-                  style="width: 160px"
+                  style="width: 160px;"
                 />
                 <span
                   id="radius-value"
-                  style="
-                    font-size: 0.85rem;
-                    min-width: 3.5rem;
-                    text-align: right;
-                  "
+                  style="font-size: 0.85rem; min-width: 3.5rem; text-align: right;"
                 ></span>
               </div>
 
-              <div style="display: flex; align-items: center; gap: 0.35rem">
-                <label for="fov-slider" style="font-size: 0.9rem">FOV:</label>
+              <div style="display: flex; align-items: center; gap: 0.35rem;">
+                <label for="fov-slider" style="font-size: 0.9rem;">FOV:</label>
                 <input
                   id="fov-slider"
                   type="range"
@@ -588,19 +582,28 @@
                   max="80"
                   step="1"
                   value="50"
-                  style="width: 160px"
+                  style="width: 160px;"
                 />
                 <span
                   id="fov-value"
-                  style="
-                    font-size: 0.85rem;
-                    min-width: 3.5rem;
-                    text-align: right;
-                  "
+                  style="font-size: 0.85rem; min-width: 3.5rem; text-align: right;"
                 ></span>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 0.35rem;">
+                <label for="texture-select" style="font-size: 0.9rem;">Background:</label>
+                <select
+                  id="texture-select"
+                  style="font-size: 0.9rem; padding: 0.25rem 0.5rem; min-width: 180px;"
+                >
+                  <option value="./blue_nebulae_2.png">Nebula 1 (default)</option>
+                  <option value="./sky_map_1.png">Sky Map 1</option>
+                  <option value="./sky_map_2.png">Sky Map 2</option>
+                </select>
               </div>
             </div>
             <div class="panel-body">
+              <!-- Add short instructions or labels for the demo here (optional) -->
               <!-- Add short instructions or labels for the demo here (optional) -->
             </div>
           </div>
@@ -619,6 +622,8 @@
 
     <script src="https://cdn.jsdelivr.net/gh/Tezumie/ShaderMate@main/src/shaderMate.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/gh/Tezumie/ShaderMate@main/src/shaderMate.js"></script>
+
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const btn = document.getElementById("shader-toggle");
@@ -626,6 +631,7 @@
         const radiusLabel = document.getElementById("radius-value");
         const fovSlider = document.getElementById("fov-slider");
         const fovLabel = document.getElementById("fov-value");
+        const textureSelect = document.getElementById("texture-select");
 
         // Default uniform values (match GLSL defaults / UI defaults)
         const radiusUniform = {
@@ -647,47 +653,57 @@
 
         let shaderInstance = null;
         let paused = true;
+        let currentTextureUrl = textureSelect
+          ? textureSelect.value
+          : "./blue_nebulae_2.png";
 
-        // Start ShaderMate and wait for the instance (Promise-based API)
-        ShaderMate.startShaderMate([
-          {
-            name: "BufferA",
-            src: "./buf.glsl",
-            size: "screen",
-            screen: false,
-          },
-          {
-            name: "Main",
-            src: "./frag.glsl",
-            size: "screen",
-            screen: true,
-            channels: [
-              {
-                url: "./blue_nebulae_2.png",
-                filter: "linear",
-                wrap: "clamp",
-                flipY: true,
-              },
-              {
-                id: "BufferA",
-              },
-            ],
-            uniforms: {
-              radius: radiusUniform,
-              fov: fovUniform,
+        function initShaderGraph() {
+          return ShaderMate.startShaderMate([
+            {
+              name: "BufferA",
+              src: "./buf.glsl",
+              size: "screen",
+              screen: false,
             },
-          },
-        ])
-          .then((sm) => {
-            shaderInstance = sm;
-            sm.pause(); // start paused
-            if (btn) {
-              btn.textContent = "Resume ▶";
-            }
-          })
-          .catch((err) => {
-            console.error("ShaderMate init error:", err);
-          });
+            {
+              name: "Main",
+              src: "./frag.glsl",
+              size: "screen",
+              screen: true,
+              channels: [
+                {
+                  url: currentTextureUrl,
+                  filter: "linear",
+                  wrap: "clamp",
+                  flipY: true,
+                },
+                {
+                  id: "BufferA",
+                },
+              ],
+              uniforms: {
+                radius: radiusUniform,
+                fov: fovUniform,
+              },
+            },
+          ])
+            .then((sm) => {
+              shaderInstance = sm;
+              if (paused) {
+                sm.pause();
+                if (btn) btn.textContent = "Resume ▶";
+              } else {
+                sm.resume();
+                if (btn) btn.textContent = "Pause ❚❚";
+              }
+            })
+            .catch((err) => {
+              console.error("ShaderMate init error:", err);
+            });
+        }
+
+        // Initial start
+        initShaderGraph();
 
         // Hook up sliders to uniforms
         if (radiusSlider) {
@@ -713,7 +729,6 @@
         // Pause / resume button
         if (btn) {
           btn.addEventListener("click", () => {
-            //if (!shaderInstance) return;
             if (paused) {
               shaderInstance.resume();
               btn.textContent = "Pause ❚❚";
@@ -724,7 +739,22 @@
             paused = !paused;
           });
         }
+
+        // Texture dropdown: switch iChannel0 image
+        if (textureSelect) {
+          textureSelect.addEventListener("change", () => {
+            currentTextureUrl = textureSelect.value;
+
+            if (shaderInstance && shaderInstance.stop) {
+              shaderInstance.stop();
+              shaderInstance = null;
+            }
+
+            initShaderGraph();
+          });
+        }
       });
     </script>
   </body>
+</html>
 </html>
