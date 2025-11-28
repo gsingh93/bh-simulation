@@ -1,10 +1,6 @@
-/*
-#iChannel0 "file://./blue_nebulae_2.png"
-#iChannel1 "file://./buf.glsl"
-#iKeyboard
-#iUniform float radius = 0.1 in{0.00, 0.4 }
-#iUniform float fov = 50 in{10, 80 }
-*/
+#define vscode 0
+
+#if vscode == 0
 
 uniform sampler2D iChannel0;
 uniform sampler2D iChannel1;
@@ -12,6 +8,14 @@ uniform vec3 iResolution;
 uniform vec4 iMouse;
 uniform float radius;
 uniform float fov;
+
+#iChannel0 "file://./blue_nebulae_2.png"
+#iChannel1 "file://./buf.glsl"
+#iKeyboard
+#iUniform float radius = 0.1 in{0.00, 0.4 }
+#iUniform float fov = 50 in{10, 80 }
+
+#endif
 
 /* ============================================================
    Black-hole lensing with a spherical (equirectangular) sky map

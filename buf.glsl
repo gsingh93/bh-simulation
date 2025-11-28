@@ -1,9 +1,17 @@
-// #iChannel0 "self"
+#define vscode 1
+
+#if vscode == 0
 
 uniform sampler2D iChannel0;
 uniform int iFrame;
 uniform vec4 iMouse;
 uniform vec3 iResolution;
+
+#else
+
+#iChannel0 "self"
+
+#endif
 
 const float PI = 3.14159265359;
 
