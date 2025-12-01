@@ -95,7 +95,7 @@ vec3 sampleSkySpherical(vec3 dir) {
   dir = normalize(dir);
   float phi = atan(dir.z, dir.x);              // longitude
   float theta = asin(clamp(dir.y, -1.0, 1.0)); // latitude
-  vec2 uv = vec2(phi / (2.0 * PI) + 0.5, 0.5 - theta / PI);
+  vec2 uv = vec2(phi / (2.0 * PI) + 0.5, 0.5 + theta / PI);
   uv.x = fract(uv.x);           // wrap U
   uv.y = clamp(uv.y, 0.0, 1.0); // clamp V
   return texture(iChannel0, uv).rgb;
