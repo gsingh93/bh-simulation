@@ -1,1 +1,1 @@
-bh-spherical.glsl
+bh-clean.glsl
