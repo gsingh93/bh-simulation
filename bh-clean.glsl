@@ -47,6 +47,11 @@ vec3 makeRay(vec2 p, vec3 ro, vec3 ta, float fovRad) {
   return normalize(r * (p.x * h) + u * (p.y * h) + f);
 }
 
+vec3 rotateAround(vec3 v, vec3 axis, float ang) {
+  float c = cos(ang), s = sin(ang);
+  return v * c + cross(axis, v) * s + axis * dot(axis, v) * (1.0 - c);
+}
+
 // -------------------- Lensing (single kick) --------------------
 
 // Impact parameter b: shortest distance from ray to BH center
