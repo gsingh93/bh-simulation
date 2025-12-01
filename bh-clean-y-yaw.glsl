@@ -3,14 +3,16 @@
 #if vscode == 0
 // WebGL / browser uniforms
 uniform sampler2D iChannel0; // environment (equirectangular) texture
-uniform sampler2D iChannel1; // yaw buffer (if used in your host)
+uniform sampler2D iChannel1; // yaw/pitch buffer if used by host
 uniform vec3 iResolution;    // (width, height, depth)
 uniform vec4 iMouse;         // xy = current, zw = click
 uniform float radius;        // black hole Schwarzschild radius (world units)
 uniform float fov;           // vertical field of view in degrees
 #else
 // Shadertoy-style setup for local testing in VSCode
-#iChannel0 "file://./blue_nebulae_2.png"
+// #iChannel0 "file://./blue_nebulae_2.png"
+#iChannel0 "file://./toronto.jpg"
+// #iChannel0 "file://./pier_14.jpg"
 #iChannel1 "file://./buf.glsl"
 #iKeyboard
 #iUniform float radius = 0.1 in{0.00, 0.4 }
@@ -104,10 +106,8 @@ vec3 sampleSkySpherical(vec3 dir) {
   dir = normalize(dir);
   float phi = atan(dir.z, dir.x);              // longitude
   float theta = asin(clamp(dir.y, -1.0, 1.0)); // latitude
-  vec2 uv = vec2(
-      phi / (2.0 * PI) + 0.5, // U: [-π,π] → [0,1]
-      0.5 + theta /
-                PI // V: [-π/2,π/2] → [0,1] (this variant expects "up" this way)
+  vec2 uv = vec2(phi / (2.0 * PI) + 0.5,       // U: [-π,π] → [0,1]
+                 0.5 + theta / PI              // V: [-π/2,π/2] → [0,1]
   );
   uv.x = fract(uv.x);           // wrap U
   uv.y = clamp(uv.y, 0.0, 1.0); // clamp V
@@ -117,27 +117,38 @@ vec3 sampleSkySpherical(vec3 dir) {
 // ---------------------------- Render -----------------------------
 
 vec3 render(vec2 p) {
-  // Camera orbit around BH in the XZ-plane
   vec3 ro;
+
+  // Horizontal movement for yaw
   float mx = iMouse.x;
   float sx = mx / iResolution.x; // [0,1]
 
+  float yaw;
+  float pitch;
+
 #if vscode == 0
-  // In browser / host mode: yaw directly from mouse X
-  float yaw = sx * 2.0 * PI;
+  // Browser/host mode:
+  // - yaw from mouse X (no persistence)
+  // - pitch fixed (no vertical camera tilt)
+  yaw = sx * 2.0 * PI;
+  pitch = 0.0;
 #else
-  // In Shadertoy/VSCode mode: yaw stored in buffer (e.g., via a separate pass)
-  float yaw = texture(iChannel1, vec2(0.5, 0.5)).r + 1.0;
+  // VSCode/Shadertoy mode:
+  // - yaw and pitch read from buf.glsl (persistent drag state)
+  vec4 state = texture(iChannel1, vec2(0.5, 0.5));
+  yaw = state.r + 1.0;
+  pitch = state.b;
 #endif
 
   float R = 4.0;         // camera distance from BH
-  vec3 center = vec3(0); // nominal BH center (XZ-plane)
+  vec3 center = vec3(0); // BH at origin
 
-  ro.x = center.x + R * cos(yaw);
-  ro.y = center.y; // fixed camera height; pitch can be added later
-  ro.z = center.z + R * sin(yaw);
+  // Spherical camera position around center, using yaw and pitch
+  ro.x = center.x + R * cos(pitch) * cos(yaw);
+  ro.y = center.y + R * sin(pitch);
+  ro.z = center.z + R * cos(pitch) * sin(yaw);
 
-  vec3 ta = center; // look at nominal BH center
+  vec3 ta = center; // look at BH
 
   // Convert FOV uniform (degrees) to radians for ray construction
   float fovRad = radians(fov);
@@ -149,13 +160,13 @@ vec3 render(vec2 p) {
   BH bh;
 
 #if vscode == 0
-  // In browser mode: use iMouse.y to control BH vertical position
+  // Browser/host mode: use iMouse.y to control BH vertical position
   // Map screen Y ∈ [0,1] to world Y ∈ [-1.5, 1.5]
   float sy = iMouse.y / iResolution.y;
-  float bhY = mix(-2.0, 2.0, sy);
+  float bhY = mix(-1.5, 1.5, sy);
   bh.pos = vec3(0.0, bhY, 0.0);
 #else
-  // In VSCode/Shadertoy mode: keep BH at origin
+  // VSCode/Shadertoy mode: BH fixed at origin; camera pitch moves view up/down
   bh.pos = vec3(0.0);
 #endif
 
