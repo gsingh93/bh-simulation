@@ -522,9 +522,9 @@
                   id="texture-select"
                   style="font-size: 0.9rem; padding: 0.25rem 0.5rem; min-width: 180px;"
                 >
-                  <option value="./blue_nebulae_2.png">Nebula</option>
-                  <option value="./toronto.jpg">Toronto</option>
-                  <option value="./pier_14.jpg">Pier 14</option>
+                  <option value="./shader/blue_nebulae_2.png">Nebula</option>
+                  <option value="./shader/toronto.jpg">Toronto</option>
+                  <option value="./shader/pier_14.jpg">Pier 14</option>
                 </select>
               </div>
             </div>
@@ -610,7 +610,7 @@
         let paused = true;
         let currentTextureUrl = textureSelect
           ? textureSelect.value
-          : "./blue_nebulae_2.png";
+          : "./shader/blue_nebulae_2.png";
 
         function initShaderGraph() {
           return ShaderMate.startShaderMate([
